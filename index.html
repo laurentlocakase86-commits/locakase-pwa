@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Locakase Réception" />
+
+  <title>Locakase Réception</title>
+  <link rel="manifest" href="manifest.json" />
+
+  <style>
+    :root {
+      --orange: #f55b02;
+      --black: #0b0b0b;
+      --dark: #151515;
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --danger: #b91c1c;
+      --success: #15803d;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: #111827;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #000 0%, #000 170px, var(--bg) 170px);
+      padding: 14px;
+    }
+
+    .logo-card {
+      background: #000;
+      border-radius: 28px;
+      padding: 26px 18px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .logo-card img {
+      width: 86%;
+      max-width: 300px;
+    }
+
+    .client-card,
+    .screen-card {
+      background: var(--card);
+      border-radius: 28px;
+      padding: 22px;
+      margin-bottom: 14px;
+      box-shadow: 0 14px 35px rgba(0,0,0,0.14);
+    }
+
+    .client-name {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 8px;
+    }
+
+    .client-subtitle {
+      color: var(--muted);
+      font-size: 21px;
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    h1, h2 {
+      margin: 0 0 18px;
+      line-height: 1.1;
+    }
+
+    h1 {
+      font-size: 34px;
+    }
+
+    h2 {
+      font-size: 30px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    button,
+    .button-link {
+      width: 100%;
+      border: 0;
+      border-radius: 22px;
+      padding: 24px 18px;
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+      background: var(--orange);
+      box-shadow: 0 10px 22px rgba(245,91,2,0.28);
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+
+    button.secondary {
+      background: var(--black);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+    }
+
+    button.light {
+      background: #fff;
+      color: #111;
+      border: 2px solid var(--border);
+      box-shadow: none;
+    }
+
+    button.danger {
+      background: var(--danger);
+      box-shadow: none;
+    }
+
+    button:disabled {
+      opacity: .6;
+    }
+
+    label {
+      display: block;
+      font-size: 23px;
+      font-weight: 900;
+      margin: 20px 0 10px;
+    }
+
+    select,
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      font-size: 24px;
+      background: #fff;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-top: 16px;
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .preview {
+      display: none;
+      margin-top: 14px;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 2px solid var(--border);
+      background: #fff;
+    }
+
+    .preview img {
+      width: 100%;
+      display: block;
+    }
+
+    .list-item {
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      margin-top: 12px;
+    }
+
+    .list-title {
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .list-meta {
+      color: var(--muted);
+      font-size: 20px;
+      margin-top: 6px;
+      line-height: 1.35;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 24px;
+      font-weight: 900;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="logo-card">
+      <img src="https://www.locakase.fr/assets/svg/logo_locakase_garde_meubles.svg" alt="Locakase" />
+    </div>
+
+    <div id="loading" class="client-card loading">Chargement du client...</div>
+
+    <div id="main" class="hidden">
+      <div class="client-card">
+        <div id="clientName" class="client-name">Client</div>
+        <div id="clientSubtitle" class="client-subtitle">Nom du client</div>
+        <div class="chips">
+          <div id="clientBox" class="chip">Box</div>
+          <div id="clientCentre" class="chip">Centre</div>
+          <div id="clientPhone" class="chip">Téléphone</div>
+        </div>
+      </div>
+
+      <section id="screenHome" class="screen-card">
+        <h1>Accueil</h1>
+        <div class="grid">
+          <button onclick="openOperation('RECEPTION')">Réception colis / palette</button>
+          <button class="secondary" onclick="openOperation('ENLEVEMENT')">Enlèvement transporteur</button>
+          <button class="light" onclick="openScreen('screenMiseBox')">Mise en box</button>
+          <button class="light" onclick="openScreen('screenHistorique')">Historique client</button>
+        </div>
+      </section>
+
+      <section id="screenOperation" class="screen-card hidden">
+        <h2 id="operationTitle">Opération</h2>
+
+        <label>Réceptionnaire</label>
+        <select id="receptionnaire"></select>
+
+        <label>Nombre de colis</label>
+        <select id="nbColis"></select>
+
+        <label>Nombre de palettes</label>
+        <select id="nbPalettes"></select>
+
+        <label>Transporteur</label>
+        <select id="transporteur">
+          <option>Chronopost</option>
+          <option>DHL</option>
+          <option>UPS</option>
+          <option>Geodis</option>
+          <option>DPD</option>
+          <option>Colissimo</option>
+          <option>GLS</option>
+          <option>France Express</option>
+          <option>Client</option>
+          <option>Autre</option>
+        </select>
+
+        <label>Emplacement</label>
+        <select id="emplacement">
+          <option value="BOX">Dans le box</option>
+          <option value="STOCKAGE">Palette en attente de retrait dans la zone de stockage</option>
+          <option value="SORTIE">Enlevé / sorti du centre</option>
+        </select>
+
+        <label>Photo optionnelle</label>
+        <input id="photoFile" type="file" accept="image/*" capture="environment" onchange="previewPhoto()" />
+
+        <div id="photoPreview" class="preview">
+          <img id="photoPreviewImg" src="" alt="Aperçu photo" />
+        </div>
+
+        <button id="btnRemovePhoto" class="danger hidden" onclick="removePhoto()">Supprimer la photo</button>
+        <button id="btnSubmit" onclick="submitOperation()">Enregistrer et notifier</button>
+        <button class="light" onclick="backHome()">Retour accueil</button>
+
+        <div id="operationStatus" class="status"></div>
+      </section>
+
+      <section id="screenMiseBox" class="screen-card hidden">
+        <h2>Mise en box</h2>
+        <div id="pendingList"></div>
+        <button class="light" onclick="backHome()">Retour accueil</button>
+      </section>
+
+      <section id="screenHistorique" class="screen-card hidden">
+        <h2>Historique client</h2>
+        <div id="historyList"></div>
+        <button class="light" onclick="backHome()">Retour accueil</button>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // À remplacer plus tard par ton URL Apps Script API.
+    const API_URL = "REMPLACE_PAR_URL_API_APPS_SCRIPT";
+
+    const state = {
+      clientId: new URLSearchParams(location.search).get("client"),
+      client: null,
+      action: "RECEPTION",
+      loading: false
+    };
+
+    const centres = {
+      Poitiers: ["Laurent", "Lina"],
+      Niort: ["Laurent", "Lina"]
+    };
+
+    document.addEventListener("DOMContentLoaded", init);
+
+    function init() {
+      fillQuantitySelect("nbColis");
+      fillQuantitySelect("nbPalettes");
+
+      if (!state.clientId) {
+        showError("Aucun client détecté dans le QR code.");
+        return;
+      }
+
+      // Mode démo temporaire : l’API sera branchée à l’étape suivante.
+      loadDemoClient();
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("service-worker.js").catch(() => {});
+      }
+    }
+
+    function loadDemoClient() {
+      state.client = {
+        id: state.clientId,
+        nom: "Nom du client",
+        nomFinal: "Nom client final",
+        box: "Box",
+        centre: "Poitiers",
+        telephone: "Téléphone",
+        pending: [],
+        history: []
+      };
+
+      renderClient();
+    }
+
+    function renderClient() {
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("main").classList.remove("hidden");
+
+      document.getElementById("clientName").textContent = state.client.nomFinal || state.client.nom;
+      document.getElementById("clientSubtitle").textContent = "Nom du client : " + state.client.nom;
+      document.getElementById("clientBox").textContent = "Box " + state.client.box;
+      document.getElementById("clientCentre").textContent = state.client.centre;
+      document.getElementById("clientPhone").textContent = state.client.telephone;
+
+      fillReceptionnaires();
+      renderPending();
+      renderHistory();
+    }
+
+    function fillReceptionnaires() {
+      const select = document.getElementById("receptionnaire");
+      select.innerHTML = "";
+      const names = centres[state.client.centre] || ["Laurent"];
+      names.forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
+      });
+    }
+
+    function fillQuantitySelect(id) {
+      const select = document.getElementById(id);
+      select.innerHTML = "";
+      for (let i = 0; i <= 10; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        select.appendChild(option);
+      }
+    }
+
+    function openOperation(action) {
+      vibrate();
+      resetForm();
+      state.action = action;
+
+      if (action === "ENLEVEMENT") {
+        document.getElementById("operationTitle").textContent = "Enlèvement transporteur";
+        document.getElementById("emplacement").value = "SORTIE";
+      } else {
+        document.getElementById("operationTitle").textContent = "Réception colis / palette";
+        document.getElementById("emplacement").value = "BOX";
+      }
+
+      openScreen("screenOperation");
+    }
+
+    function openScreen(id) {
+      ["screenHome", "screenOperation", "screenMiseBox", "screenHistorique"].forEach(screen => {
+        document.getElementById(screen).classList.add("hidden");
+      });
+      document.getElementById(id).classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function backHome() {
+      resetForm();
+      document.getElementById("operationStatus").textContent = "";
+      openScreen("screenHome");
+    }
+
+    function resetForm() {
+      document.getElementById("nbColis").value = "0";
+      document.getElementById("nbPalettes").value = "0";
+      document.getElementById("transporteur").selectedIndex = 0;
+      document.getElementById("emplacement").value = "BOX";
+      removePhoto();
+      setLoading(false);
+    }
+
+    function previewPhoto() {
+      const file = document.getElementById("photoFile").files[0];
+      if (!file) {
+        removePhoto();
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = event => {
+        document.getElementById("photoPreviewImg").src = event.target.result;
+        document.getElementById("photoPreview").style.display = "block";
+        document.getElementById("btnRemovePhoto").classList.remove("hidden");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removePhoto() {
+      const input = document.getElementById("photoFile");
+      if (input) input.value = "";
+      document.getElementById("photoPreviewImg").src = "";
+      document.getElementById("photoPreview").style.display = "none";
+      document.getElementById("btnRemovePhoto").classList.add("hidden");
+    }
+
+    function submitOperation() {
+      vibrate();
+
+      const nbColis = Number(document.getElementById("nbColis").value);
+      const nbPalettes = Number(document.getElementById("nbPalettes").value);
+
+      if (nbColis <= 0 && nbPalettes <= 0) {
+        setStatus("Erreur : indique au moins 1 colis ou 1 palette.", true);
+        return;
+      }
+
+      setLoading(true);
+      setStatus("Envoi en cours...", false);
+
+      // L'appel API sera branché après création du backend.
+      setTimeout(() => {
+        setLoading(false);
+        setStatus("Interface prête. Prochaine étape : brancher l’API Apps Script.", false);
+      }, 600);
+    }
+
+    function setLoading(isLoading) {
+      state.loading = isLoading;
+      const btn = document.getElementById("btnSubmit");
+      btn.disabled = isLoading;
+      btn.textContent = isLoading ? "Envoi en cours..." : "Enregistrer et notifier";
+    }
+
+    function setStatus(message, isError) {
+      const el = document.getElementById("operationStatus");
+      el.textContent = message;
+      el.className = "status " + (isError ? "error" : "success");
+    }
+
+    function renderPending() {
+      const list = document.getElementById("pendingList");
+      const items = state.client.pending || [];
+
+      if (!items.length) {
+        list.innerHTML = '<div class="list-item"><div class="list-title">Aucune palette en attente</div></div>';
+        return;
+      }
+
+      list.innerHTML = items.map(item => `
+        <div class="list-item">
+          <div class="list-title">${item.action} - ${item.type}</div>
+          <div class="list-meta">${item.quantite}<br>${item.transporteur}<br>${item.date}</div>
+          <button class="secondary">Mettre en box</button>
+        </div>
+      `).join("");
+    }
+
+    function renderHistory() {
+      const list = document.getElementById("historyList");
+      const items = state.client.history || [];
+
+      if (!items.length) {
+        list.innerHTML = '<div class="list-item"><div class="list-title">Aucun historique</div></div>';
+        return;
+      }
+
+      list.innerHTML = items.map(item => `
+        <div class="list-item">
+          <div class="list-title">${item.date}</div>
+          <div class="list-meta">${item.action} - ${item.type}<br>${item.statut}</div>
+        </div>
+      `).join("");
+    }
+
+    function vibrate() {
+      if (navigator.vibrate) navigator.vibrate(30);
+    }
+
+    function showError(message) {
+      document.getElementById("loading").textContent = message;
+    }
+  </script>
+</body>
+</html>
